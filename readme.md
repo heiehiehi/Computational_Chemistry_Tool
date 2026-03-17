@@ -30,7 +30,7 @@
 
 ***
 
-## 🔬 工具一：`energy.py` (MM/PBSA 结合自由能批量计算)
+## 🔬 工具一：`auto_mmpbsa.py` (MM/PBSA 结合自由能批量计算)
 
 ### 1. 工具简介
 这个脚本主要用来在后台（WSL 环境）全自动、批量地运行 `gmx_MMPBSA`，计算配体与受体的结合自由能。
@@ -69,7 +69,7 @@ E:\GROMACS\Two Target\          <-- 你的工程根目录 (config.yaml 中的 ba
 
 ***
 
-## 📊 工具二：`ProLIFget.py` (ProLIF 蛋白-配体相互作用指纹分析)
+## 📊 工具二：`auto_prolif.py` (ProLIF 蛋白-配体相互作用指纹分析)
 
 ### 1. 工具简介
 这个脚本基于 `MDAnalysis` 和 `ProLIF` 库，用来批量提取 MD 轨迹中蛋白与配体之间的动态非共价相互作用（如氢键、盐桥、π-π 堆叠、疏水作用等）。
@@ -112,7 +112,7 @@ E:\GROMACS\Two Target\          <-- 你的工程根目录 (config.yaml 中的 ba
 
 ***
 
-## 📈 工具三：`rmsf_get.py` (RMSF 均方根涨落提取与绘图)
+## 📈 工具三：`auto_rmsf.py` (RMSF 均方根涨落提取与绘图)
 
 ### 1. 工具简介
 这个脚本用来批量计算复合物体系的 RMSF（均方根涨落），以直观反映配体结合前后，蛋白特定区域（如柔性 Loop 区或催化口袋）的刚性化程度与运动学变化。
