@@ -1,0 +1,25 @@
+global:
+  base_dir_win: "E:\\GROMACS\\Two Target"  # Windows 下的根目录 (必须使用双反斜杠或正斜杠)
+  targets:                                 # 你的靶点文件夹名称列表 (可任意增减)
+    - STAT3
+    - JAK2
+  hit_prefix: "Hit"                        # 小分子复合物文件夹的前缀 (如 Hit, Ligand, Mol 等)
+
+# 2. MMPBSA 计算配置 (Auto-MMPBSA)
+mmpbsa:
+  conda_env: "gmxMMPBSA"                   # 运行 MMPBSA 所在的 conda 环境名
+  mmpbsa_in_rel: "energy/mmpbsa.in"        # mmpbsa.in 文件相对于 base_dir_win 的相对路径
+  mpi_cores: 8                             # MPI 并行调用的物理核心数
+  group_receptor: 1                        # 受体在 index.ndx 中的组别编号
+  group_ligand: 13                         # 配体在 index.ndx 中的组别编号
+  auto_fix_targets:                        # 需要自动执行 Topology 修复 (改 func 4) 的靶点
+    - JAK2                                 # 如果不需要修复，把这里留空或注释掉
+
+# 3. 相互作用指纹分析配置 (Auto-ProLIF)
+prolif:
+  ligand_resname: "MOL"                    # 拓扑中配体的残基名称 (如 MOL, UNK, LIG)
+  occupancy_threshold: 0.15                # 相互作用频率的过滤阈值 (0.15 代表只显示发生频率 > 15% 的作用)
+
+# 4. 均方根涨落计算配置 (Auto-RMSF)
+rmsf:
+  conda_env: "gmxMMPBSA"                   # 包含 gmx 命令的 conda 环境名
