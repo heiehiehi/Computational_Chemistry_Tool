@@ -48,7 +48,6 @@
 
 ```text
 E:\GROMACS\Two Target\          <-- 你的工程根目录 (config.yaml 中的 base_dir_win)
-├── config.yaml                 <-- 全局配置文件
 ├── energy\                     
 │   └── mmpbsa.in               <-- 【必须】MMPBSA 的输入参数控制文件 (需指定好力场等)
 ├── STAT3\                      <-- 靶点名称 (config 中的 targets)
@@ -89,7 +88,6 @@ E:\GROMACS\Two Target\          <-- 你的工程根目录 (config.yaml 中的 ba
 
 ```text
 E:\GROMACS\Two Target\          <-- 你的工程根目录 (config.yaml 中的 base_dir_win)
-├── config.yaml                 <-- 全局配置文件
 ├── STAT3\                      <-- 靶点名称 (config 中的 targets)
 │   ├── Hit1\                   <-- 具体的复合物体系 (以 config 中的 hit_prefix 开头)
 │   │   ├── md_center.xtc       <-- 【必须】已去除 PBC 并居中的轨迹文件
@@ -135,7 +133,6 @@ E:\GROMACS\Two Target\          <-- 你的工程根目录 (config.yaml 中的 ba
 
 ```text
 E:\GROMACS\Two Target\          <-- 你的工程根目录 (config.yaml 中的 base_dir_win)
-├── config.yaml                 <-- 全局配置文件
 ├── STAT3\                      <-- 靶点名称 (config 中的 targets)
 │   ├── Hit1\                   <-- 具体的复合物体系 (以 config 中的 hit_prefix 开头)
 │   │   ├── md_fit.xtc          <-- 【必须】已去除 PBC 并居中叠合的轨迹文件
@@ -159,5 +156,48 @@ E:\GROMACS\Two Target\          <-- 你的工程根目录 (config.yaml 中的 ba
    ```
 4. **交互选择**：终端会提示你输入要计算的组别编号（输入 `1`、`3` 或 `4`，直接敲击回车则使用 yaml 文件中的默认值）。
 5. **收取结果**：脚本会自动调用 WSL 跑完所有体系。完成后，去工程根目录下新生成的 `RMSF` 文件夹中，按靶点和 Hit 名称查看对应的图表与数据源。
+
+***
+
+## 🧬 工具四：`auto_hbonds.py` (动态氢键数量提取与绘图)
+
+### 1. 工具简介
+分子间氢键的数量是衡量配体与蛋白结合稳定性的重要指标。本工具使用 `gmx hbond-legacy` 命令，全自动提取整条分子动力学轨迹中配体（Ligand）与受体（Protein）之间形成的氢键数量。
+
+**核心特性：**
+* **零配置自动读取**：脚本极其聪明地复用了 `config.yaml` 中为 `mmpbsa` 设置的 `group_receptor` 和 `group_ligand` 编号，自动模拟键盘输入选择蛋白和配体，免去额外配置的烦恼。
+* **单位自动换算**：在绘制图表时，自动将 GROMACS 默认的皮秒（ps）时间轴换算为学术界发文更常用的纳秒（ns）。
+* **高级质感出图**：抛弃了简陋的线条，针对氢键这种高频波动的数据，采用了带有暖色调（红色系）半透明填充区域的学术风折线图，使其与冷色调的 RMSF 图表形成完美的视觉区分。
+
+### 2. 目录结构与依赖文件
+程序运行时，会在工程根目录下自动建立一个专门的 `HBonds` 文件夹存放所有结果。
+
+请确保原始数据中包含 `.xtc`、`.tpr` 以及 `.ndx` 索引文件：
+
+```text
+E:\GROMACS\Two Target\          <-- config.yaml 中的 base_dir_win               
+├── STAT3\                      
+│   ├── Hit1\                   
+│   │   ├── md_fit.xtc          <-- 【必须】已叠合好的轨迹文件
+│   │   ├── md.tpr              <-- 【必须】MD 运行输入文件
+│   │   └── index.ndx           <-- 【必须】包含受体和配体组别的索引文件
+│   └── Hit2\
+└── HBonds\                     <-- 【运行后自动生成】存放氢键结果的总目录
+    └── STAT3\
+        ├── Hit1\
+        │   ├── total_hbonds.xvg          <-- 原始数量文件
+        │   ├── lifetime.xvg              <-- 寿命文件 (仅生成备用)
+        │   ├── Hit1_HBonds.csv           <-- 提取出的时间-数量干净数据表
+        │   └── Hit1_HBonds.png           <-- 渲染好的氢键波动图
+        └── Hit2\
+```
+
+### 3. 操作指南
+1. **核对配置**：只要你之前在 `config.yaml` 填好了 `targets`、`hit_prefix` 以及 `mmpbsa` 下面的受体配体组别号，这步直接跳过。
+2. **一键运行**：在 Windows 终端中执行：
+   ```bash
+   python auto_hbonds.py
+   ```
+3. **收取结果**：脚本跑完后，去根目录新生成的 `HBonds` 文件夹中，按靶点和 Hit 名称收取 `.xvg` 原始文件、供 Origin 使用的 `.csv` 数据源以及高清的 `.png` 分析图。
 
 ***
