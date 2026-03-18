@@ -200,3 +200,31 @@ E:\GROMACS\Two Target\          <-- config.yaml 中的 base_dir_win
 3. **收取结果**：脚本跑完后，去根目录新生成的 `HBonds` 文件夹中，按靶点和 Hit 名称收取 `.xvg` 原始文件、供 Origin 使用的 `.csv` 数据源以及高清的 `.png` 分析图。
 
 ***
+
+# 工具五 decomp_get.py 结合能单残基能量分解与最强氨基酸统计
+
+## 1. 工具简介
+该脚本用于深入分析 MMPBSA 计算产生的 FINAL_DECOMP_MMPBSA.dat 文件，提取配体与受体相互作用中的单残基能量贡献。脚本会自动剥离复合物和受体的绝对能量，精准定位到 DELTAS 段落，提取平均结合能及其标准误。程序会自动将原始的残基命名转换为标准格式如 GLN843。除了为每个体系生成前6个关键氨基酸的柱状图和对应的数据表外，脚本新增了全局统计功能，自动将所有体系中结合能最强的那个氨基酸提取出来，汇总成一张总表，方便后续统一制表对比。
+
+## 2. 目录结构与依赖文件
+程序运行时会读取工程根目录下 MMPBSACal 文件夹中的计算结果，并将清洗后的分析数据统一输出到 Dresult 文件夹中。
+
+```text
+E:\GROMACS\Two Target\
+├── Tool\
+│   └── decomp_get.py
+├── MMPBSACal\
+│   └── STAT3\
+│       └── Hit1\
+│           └── FINAL_DECOMP_MMPBSA.dat
+└── Dresult\
+    ├── Strongest_Residue_Summary.csv
+    └── STAT3\
+        └── Hit1\
+            ├── Hit1_All_Residues_Decomp.csv
+            ├── Hit1_Top6_Residues.csv
+            └── Hit1_Top6_Energy.png
+```
+
+## 3. 操作指南
+在 Windows 终端中执行 python Tool/decomp_get.py 即可。程序会自动遍历所有靶点和体系，提取并绘制能量柱状图。所有单独体系的图表和数据均存放在 Dresult 对应的文件夹下，用于跨体系对比的单氨基酸最强结合能汇总表则直接生成在 Dresult 的根目录中。
